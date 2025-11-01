@@ -1,7 +1,7 @@
 ---
 title: "My Final Project Template"
 author: Mustafa Gursoy
-subtitle: Subtitle here if desired
+subtitle: Spatial Data Science Project
 date: today
 date-format: long
 ---

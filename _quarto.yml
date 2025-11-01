@@ -2,7 +2,7 @@ project:
   type: website
 
 website:
-  title: "GEO511_FinalProject_GURSOY"
+  title: "GEO511_FinalProject_Gursoy"
   navbar:
     left:
       - href: index.qmd
