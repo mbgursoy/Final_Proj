@@ -232,11 +232,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">mode =</span> <span class="st">"wb"</span></span>
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<p>US presidential elections in 2020</p>
+<p>US presidential elections in 2020*</p>
 <p>https:// dataverse.harvard.edu/dataset.xhtml?persistentId=doi%3A10.7910%2FDVN%2FVOQCHQ&amp;</p>
 <p><a href="data/countypres_2000-2024.csv">Download the CSV</a></p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>data_US_elec <span class="ot">&lt;-</span> readr<span class="sc">::</span><span class="fu">read_csv</span>(<span class="st">"data/countypres_2000-2024.csv"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>American urban-rural population (last update 2023)</p>
+<p>*I haven’t accomplish setting a download link for this set of data yet. American urban-rural population (last update 2023)</p>
 <p>https:// www.ers.usda.gov/data-products/rural-urban-continuum-codes</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">download.file</span>(</span>
@@ -249,35 +249,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"sf"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code># Downloading packages -------------------------------------------------------
-- Downloading sf from CRAN ...                  OK [3.9 Mb in 0.3s]
-- Downloading classInt from CRAN ...            OK [484.9 Kb in 0.13s]
-- Downloading e1071 from CRAN ...               OK [582.6 Kb in 0.12s]
-- Downloading proxy from CRAN ...               OK [171.4 Kb in 0.13s]
-- Downloading s2 from CRAN ...                  OK [2.1 Mb in 0.14s]
-- Downloading wk from CRAN ...                  OK [1.6 Mb in 0.12s]
-- Downloading units from CRAN ...               OK [467.5 Kb in 0.13s]
-Successfully downloaded 7 packages in 2 seconds.
-
-The following package(s) will be installed:
-- classInt [0.4-11]
-- e1071    [1.7-16]
-- proxy    [0.4-27]
-- s2       [1.1.9]
-- sf       [1.0-21]
-- units    [1.0-0]
-- wk       [0.9.4]
+<pre><code>The following package(s) will be installed:
+- sf [1.0-21]
 These packages will be installed into "~/work/Final_Proj/Final_Proj/renv/library/linux-ubuntu-noble/R-4.5/x86_64-pc-linux-gnu".
 
 # Installing packages --------------------------------------------------------
-- Installing proxy ...                          OK [installed binary and cached in 0.21s]
-- Installing e1071 ...                          OK [installed binary and cached in 0.22s]
-- Installing classInt ...                       OK [installed binary and cached in 0.22s]
-- Installing wk ...                             OK [installed binary and cached in 0.24s]
-- Installing s2 ...                             OK [installed binary and cached in 0.34s]
-- Installing units ...                          OK [installed binary and cached in 0.31s]
-- Installing sf ...                             OK [installed binary and cached in 0.57s]
-Successfully installed 7 packages in 2.3 seconds.</code></pre>
+- Installing sf ...                             OK [linked from cache]
+Successfully installed 1 package in 6.7 milliseconds.</code></pre>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"dplyr"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
@@ -297,44 +275,31 @@ These packages will be installed into "~/work/Final_Proj/Final_Proj/renv/library
 
 # Installing packages --------------------------------------------------------
 - Installing readr ...                          OK [linked from cache]
-Successfully installed 1 package in 5.8 milliseconds.</code></pre>
+Successfully installed 1 package in 5.9 milliseconds.</code></pre>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"ggplot2"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code># Downloading packages -------------------------------------------------------
-- Downloading ggplot2 from CRAN ...             OK [5.6 Mb in 0.15s]
-- Downloading gtable from CRAN ...              OK [217.3 Kb in 0.16s]
-- Downloading S7 from CRAN ...                  OK [316.7 Kb in 0.13s]
-- Downloading scales from CRAN ...              OK [821.6 Kb in 0.13s]
-Successfully downloaded 4 packages in 1.1 seconds.
-
-The following package(s) will be installed:
+<pre><code>The following package(s) will be installed:
 - ggplot2 [4.0.0]
 - gtable  [0.3.6]
-- S7      [0.2.0]
 - scales  [1.4.0]
 These packages will be installed into "~/work/Final_Proj/Final_Proj/renv/library/linux-ubuntu-noble/R-4.5/x86_64-pc-linux-gnu".
 
 # Installing packages --------------------------------------------------------
-- Installing gtable ...                         OK [installed binary and cached in 0.33s]
-- Installing S7 ...                             OK [installed binary and cached in 0.22s]
-- Installing scales ...                         OK [installed binary and cached in 0.43s]
-- Installing ggplot2 ...                        OK [installed binary and cached in 0.89s]
-Successfully installed 4 packages in 2 seconds.</code></pre>
+- Installing gtable ...                         OK [linked from cache]
+- Installing scales ...                         OK [linked from cache]
+- Installing ggplot2 ...                        OK [linked from cache]
+Successfully installed 3 packages in 14 milliseconds.</code></pre>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"tigris"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code># Downloading packages -------------------------------------------------------
-- Downloading tigris from CRAN ...              OK [375.5 Kb in 0.13s]
-Successfully downloaded 1 package in 0.36 seconds.
-
-The following package(s) will be installed:
+<pre><code>The following package(s) will be installed:
 - tigris [2.2.1]
 These packages will be installed into "~/work/Final_Proj/Final_Proj/renv/library/linux-ubuntu-noble/R-4.5/x86_64-pc-linux-gnu".
 
 # Installing packages --------------------------------------------------------
-- Installing tigris ...                         OK [installed binary and cached in 0.84s]
-Successfully installed 1 package in 0.87 seconds.</code></pre>
+- Installing tigris ...                         OK [linked from cache]
+Successfully installed 1 package in 5.9 milliseconds.</code></pre>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"classInt"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
@@ -344,7 +309,7 @@ These packages will be installed into "~/work/Final_Proj/Final_Proj/renv/library
 
 # Installing packages --------------------------------------------------------
 - Installing classInt ...                       OK [linked from cache]
-Successfully installed 1 package in 5.7 milliseconds.</code></pre>
+Successfully installed 1 package in 6.2 milliseconds.</code></pre>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"scales"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
@@ -354,38 +319,27 @@ These packages will be installed into "~/work/Final_Proj/Final_Proj/renv/library
 
 # Installing packages --------------------------------------------------------
 - Installing scales ...                         OK [linked from cache]
-Successfully installed 1 package in 5.6 milliseconds.</code></pre>
+Successfully installed 1 package in 5.8 milliseconds.</code></pre>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"janitor"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code># Downloading packages -------------------------------------------------------
-- Downloading janitor from CRAN ...             OK [281.5 Kb in 0.12s]
-- Downloading snakecase from CRAN ...           OK [157.8 Kb in 0.12s]
-Successfully downloaded 2 packages in 0.54 seconds.
-
-The following package(s) will be installed:
-- janitor   [2.2.1]
-- snakecase [0.11.1]
+<pre><code>The following package(s) will be installed:
+- janitor [2.2.1]
 These packages will be installed into "~/work/Final_Proj/Final_Proj/renv/library/linux-ubuntu-noble/R-4.5/x86_64-pc-linux-gnu".
 
 # Installing packages --------------------------------------------------------
-- Installing snakecase ...                      OK [installed binary and cached in 0.2s]
-- Installing janitor ...                        OK [installed binary and cached in 0.45s]
-Successfully installed 2 packages in 0.7 seconds.</code></pre>
+- Installing janitor ...                        OK [linked from cache]
+Successfully installed 1 package in 6 milliseconds.</code></pre>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"stringr"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code># Downloading packages -------------------------------------------------------
-- Downloading stringr from CRAN ...             OK [325.9 Kb in 0.12s]
-Successfully downloaded 1 package in 0.24 seconds.
-
-The following package(s) will be installed:
+<pre><code>The following package(s) will be installed:
 - stringr [1.6.0]
 These packages will be installed into "~/work/Final_Proj/Final_Proj/renv/library/linux-ubuntu-noble/R-4.5/x86_64-pc-linux-gnu".
 
 # Installing packages --------------------------------------------------------
-- Installing stringr ...                        OK [installed binary and cached in 0.34s]
-Successfully installed 1 package in 0.37 seconds.</code></pre>
+- Installing stringr ...                        OK [linked from cache]
+Successfully installed 1 package in 6.5 milliseconds.</code></pre>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"units"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
@@ -459,74 +413,74 @@ Successfully installed 1 package in 5.9 milliseconds.</code></pre>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: center;">-21.03</td>
-<td style="text-align: center;">-12.39</td>
-<td style="text-align: center;">19.60</td>
-<td style="text-align: center;">e</td>
-<td style="text-align: center;">-0.92</td>
+<td style="text-align: center;">96.07</td>
+<td style="text-align: center;">-16.20</td>
+<td style="text-align: center;">5.50</td>
+<td style="text-align: center;">a</td>
+<td style="text-align: center;">0.69</td>
 </tr>
 <tr class="even">
-<td style="text-align: center;">-83.16</td>
-<td style="text-align: center;">-21.66</td>
-<td style="text-align: center;">5.12</td>
+<td style="text-align: center;">20.06</td>
+<td style="text-align: center;">-36.04</td>
+<td style="text-align: center;">5.17</td>
 <td style="text-align: center;">d</td>
-<td style="text-align: center;">0.80</td>
+<td style="text-align: center;">0.23</td>
 </tr>
 <tr class="odd">
-<td style="text-align: center;">121.69</td>
-<td style="text-align: center;">53.16</td>
-<td style="text-align: center;">15.63</td>
-<td style="text-align: center;">c</td>
-<td style="text-align: center;">0.70</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">-158.03</td>
-<td style="text-align: center;">34.88</td>
-<td style="text-align: center;">7.32</td>
+<td style="text-align: center;">-34.47</td>
+<td style="text-align: center;">-37.54</td>
+<td style="text-align: center;">14.40</td>
 <td style="text-align: center;">d</td>
-<td style="text-align: center;">-1.44</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">-95.13</td>
-<td style="text-align: center;">17.03</td>
-<td style="text-align: center;">10.99</td>
-<td style="text-align: center;">b</td>
-<td style="text-align: center;">-1.91</td>
+<td style="text-align: center;">1.33</td>
 </tr>
 <tr class="even">
-<td style="text-align: center;">-165.09</td>
-<td style="text-align: center;">-13.01</td>
-<td style="text-align: center;">13.84</td>
-<td style="text-align: center;">e</td>
-<td style="text-align: center;">0.19</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">168.78</td>
-<td style="text-align: center;">-58.69</td>
-<td style="text-align: center;">6.52</td>
-<td style="text-align: center;">b</td>
-<td style="text-align: center;">0.36</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">89.36</td>
-<td style="text-align: center;">29.97</td>
-<td style="text-align: center;">19.05</td>
-<td style="text-align: center;">e</td>
+<td style="text-align: center;">88.39</td>
+<td style="text-align: center;">-29.39</td>
+<td style="text-align: center;">19.36</td>
+<td style="text-align: center;">d</td>
 <td style="text-align: center;">0.69</td>
 </tr>
 <tr class="odd">
-<td style="text-align: center;">98.05</td>
-<td style="text-align: center;">-58.64</td>
-<td style="text-align: center;">12.64</td>
-<td style="text-align: center;">d</td>
-<td style="text-align: center;">0.58</td>
+<td style="text-align: center;">74.02</td>
+<td style="text-align: center;">5.61</td>
+<td style="text-align: center;">15.00</td>
+<td style="text-align: center;">c</td>
+<td style="text-align: center;">0.86</td>
 </tr>
 <tr class="even">
-<td style="text-align: center;">105.44</td>
-<td style="text-align: center;">59.03</td>
-<td style="text-align: center;">19.56</td>
+<td style="text-align: center;">26.57</td>
+<td style="text-align: center;">10.17</td>
+<td style="text-align: center;">9.78</td>
 <td style="text-align: center;">c</td>
-<td style="text-align: center;">-0.22</td>
+<td style="text-align: center;">0.58</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">107.79</td>
+<td style="text-align: center;">12.45</td>
+<td style="text-align: center;">15.00</td>
+<td style="text-align: center;">b</td>
+<td style="text-align: center;">0.31</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">-61.68</td>
+<td style="text-align: center;">-14.10</td>
+<td style="text-align: center;">7.38</td>
+<td style="text-align: center;">c</td>
+<td style="text-align: center;">-0.19</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">-10.75</td>
+<td style="text-align: center;">39.73</td>
+<td style="text-align: center;">19.01</td>
+<td style="text-align: center;">b</td>
+<td style="text-align: center;">0.42</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">145.39</td>
+<td style="text-align: center;">-6.60</td>
+<td style="text-align: center;">19.04</td>
+<td style="text-align: center;">a</td>
+<td style="text-align: center;">1.71</td>
 </tr>
 </tbody>
 </table>
@@ -546,8 +500,8 @@ Successfully installed 1 package in 5.9 milliseconds.</code></pre>
 <span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">addPopups</span>(<span class="sc">~</span>x[<span class="dv">2</span>], <span class="sc">~</span>y[<span class="dv">2</span>], <span class="st">"Random popup"</span>)</span>
 <span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>m  <span class="co"># a map with the default OSM tile layer</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
-<div class="leaflet html-widget html-fill-item" id="htmlwidget-42aa7ba6ae30bf2d0d3d" style="width:100%;height:325px;"></div>
-<script type="application/json" data-for="htmlwidget-42aa7ba6ae30bf2d0d3d">{"x":{"options":{"crs":{"crsClass":"L.CRS.EPSG3857","code":null,"proj4def":null,"projectedBounds":null,"options":{}}},"calls":[{"method":"addTiles","args":["https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",null,null,{"minZoom":0,"maxZoom":18,"tileSize":256,"subdomains":"abc","errorTileUrl":"","tms":false,"noWrap":false,"zoomOffset":0,"zoomReverse":false,"opacity":1,"zIndex":1,"detectRetina":false,"attribution":"&copy; <a href=\"https://openstreetmap.org/copyright/\">OpenStreetMap<\/a>,  <a href=\"https://opendatacommons.org/licenses/odbl/\">ODbL<\/a>"}]},{"method":"addCircleMarkers","args":[[-12.39453979767859,-21.65630366653204,53.16002575680614,34.87544389441609,17.02868912369013,-13.00907269120216,-58.69297178462148,29.97330875135958,-58.63745114766061,59.02567536570132,55.91142696328461,5.977208660915494,-57.76682250201702,-3.397609898820519,12.26232186891139,-22.6599468011409,33.81037191487849,-55.38700008764863,-29.91190555505455,38.25530106201768],[-21.03124128654599,-83.1605910602957,121.6886404808611,-158.0338617693633,-95.12672728858888,-165.0884697865695,168.781323088333,89.36303143389523,98.04612530395389,105.4442749265581,-31.22291360981762,143.3902955520898,-168.5644515696913,2.165114069357514,173.5410531051457,-110.0861630123109,46.23205318115652,-173.0975935980678,170.8509612455964,8.370185103267431],[19.60337388445623,5.118765847291797,15.63018265529536,7.323371833190322,10.99288397934288,13.83608796284534,6.518294137204066,19.04539238894358,12.63506140909158,19.56492244149558,11.80261269211769,8.94281891756691,6.700681158108637,13.83286928758025,9.373422139324248,10.32049389905296,8.903775764629245,19.6665317134466,12.47943150112405,17.40461031207815],null,null,{"interactive":true,"className":"","stroke":true,"color":["e","d","c","d","b","e","b","e","d","c","b","c","d","c","d","c","b","e","c","c"],"weight":5,"opacity":0.5,"fill":true,"fillColor":["e","d","c","d","b","e","b","e","d","c","b","c","d","c","d","c","b","e","c","c"],"fillOpacity":0.2},null,null,null,null,null,{"interactive":false,"permanent":false,"direction":"auto","opacity":1,"offset":[0,0],"textsize":"10px","textOnly":false,"className":"","sticky":true},null]},{"method":"addPopups","args":[-21.65630366653204,-83.1605910602957,"Random popup",null,null,{"maxWidth":300,"minWidth":50,"autoPan":true,"keepInView":false,"closeButton":true,"className":""}]}],"limits":{"lat":[-58.69297178462148,59.02567536570132],"lng":[-173.0975935980678,173.5410531051457]}},"evals":[],"jsHooks":[]}</script>
+<div class="leaflet html-widget html-fill-item" id="htmlwidget-d2d53083a1aafb403f01" style="width:100%;height:325px;"></div>
+<script type="application/json" data-for="htmlwidget-d2d53083a1aafb403f01">{"x":{"options":{"crs":{"crsClass":"L.CRS.EPSG3857","code":null,"proj4def":null,"projectedBounds":null,"options":{}}},"calls":[{"method":"addTiles","args":["https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",null,null,{"minZoom":0,"maxZoom":18,"tileSize":256,"subdomains":"abc","errorTileUrl":"","tms":false,"noWrap":false,"zoomOffset":0,"zoomReverse":false,"opacity":1,"zIndex":1,"detectRetina":false,"attribution":"&copy; <a href=\"https://openstreetmap.org/copyright/\">OpenStreetMap<\/a>,  <a href=\"https://opendatacommons.org/licenses/odbl/\">ODbL<\/a>"}]},{"method":"addCircleMarkers","args":[[-16.19613063521683,-36.03506944142282,-37.53647170029581,-29.38821215182543,5.6133833527565,10.16765956766903,12.44684066623449,-14.09888366237283,39.73190621472895,-6.598891736939549,18.07544549927115,48.71947232633829,-1.241461280733347,28.51541228592396,55.16935396939516,37.9111691750586,-14.82034860178828,-11.37779882177711,56.31592053920031,7.816769611090422],[96.07299554161727,20.05907186307013,-34.46730491705239,88.38586765341461,74.01538979262114,26.57136412337422,107.7925115358084,-61.67529051192105,-10.75099906884134,145.3853740822524,158.5683864634484,45.85752946324646,64.3127700034529,40.38584587164223,42.29598068632185,103.2179652526975,-34.24915448762476,-178.0629714298993,41.30641018040478,0.0481070950627327],[5.496679171919823,5.166348123457283,14.39931106753647,19.36435926007107,15.00109348329715,9.776403130963445,15.00334811746143,7.377420834964141,19.01405785582028,19.03910016058944,12.54583743982948,6.833685983438045,10.02509812708013,10.83110756240785,18.06799637037329,8.820218450855464,10.27698814752512,5.880378863075748,19.38403016189113,9.348308563930914],null,null,{"interactive":true,"className":"","stroke":true,"color":["a","d","d","d","c","c","b","c","b","a","c","c","a","d","e","c","b","c","b","a"],"weight":5,"opacity":0.5,"fill":true,"fillColor":["a","d","d","d","c","c","b","c","b","a","c","c","a","d","e","c","b","c","b","a"],"fillOpacity":0.2},null,null,null,null,null,{"interactive":false,"permanent":false,"direction":"auto","opacity":1,"offset":[0,0],"textsize":"10px","textOnly":false,"className":"","sticky":true},null]},{"method":"addPopups","args":[-36.03506944142282,20.05907186307013,"Random popup",null,null,{"maxWidth":300,"minWidth":50,"autoPan":true,"keepInView":false,"closeButton":true,"className":""}]}],"limits":{"lat":[-37.53647170029581,56.31592053920031],"lng":[-178.0629714298993,158.5683864634484]}},"evals":[],"jsHooks":[]}</script>
 <p>Map of completely random data</p>
 </div>
 </div>
@@ -570,8 +524,8 @@ Successfully installed 1 package in 5.9 milliseconds.</code></pre>
 <span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="fu">dygraph</span>(nhtemp, <span class="at">main =</span> <span class="st">"New Haven Temperatures"</span>) <span class="sc">|&gt;</span> </span>
 <span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dyRangeSelector</span>(<span class="at">dateWindow =</span> <span class="fu">c</span>(<span class="st">"1920-01-01"</span>, <span class="st">"1960-01-01"</span>)) </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
-<div class="dygraphs html-widget html-fill-item" id="htmlwidget-3ddf5a2d13acaebb081f" style="width:100%;height:464px;"></div>
-<script type="application/json" data-for="htmlwidget-3ddf5a2d13acaebb081f">{"x":{"attrs":{"title":"New Haven Temperatures","labels":["year","V1"],"legend":"auto","retainDateWindow":false,"axes":{"x":{"pixelsPerLabel":60}},"showRangeSelector":true,"dateWindow":["1920-01-01T00:00:00.000Z","1960-01-01T00:00:00.000Z"],"rangeSelectorHeight":40,"rangeSelectorPlotFillColor":" #A7B1C4","rangeSelectorPlotStrokeColor":"#808FAB","interactionModel":"Dygraph.Interaction.defaultModel"},"scale":"yearly","annotations":[],"shadings":[],"events":[],"format":"date","data":[["1912-01-01T00:00:00.000Z","1913-01-01T00:00:00.000Z","1914-01-01T00:00:00.000Z","1915-01-01T00:00:00.000Z","1916-01-01T00:00:00.000Z","1917-01-01T00:00:00.000Z","1918-01-01T00:00:00.000Z","1919-01-01T00:00:00.000Z","1920-01-01T00:00:00.000Z","1921-01-01T00:00:00.000Z","1922-01-01T00:00:00.000Z","1923-01-01T00:00:00.000Z","1924-01-01T00:00:00.000Z","1925-01-01T00:00:00.000Z","1926-01-01T00:00:00.000Z","1927-01-01T00:00:00.000Z","1928-01-01T00:00:00.000Z","1929-01-01T00:00:00.000Z","1930-01-01T00:00:00.000Z","1931-01-01T00:00:00.000Z","1932-01-01T00:00:00.000Z","1933-01-01T00:00:00.000Z","1934-01-01T00:00:00.000Z","1935-01-01T00:00:00.000Z","1936-01-01T00:00:00.000Z","1937-01-01T00:00:00.000Z","1938-01-01T00:00:00.000Z","1939-01-01T00:00:00.000Z","1940-01-01T00:00:00.000Z","1941-01-01T00:00:00.000Z","1942-01-01T00:00:00.000Z","1943-01-01T00:00:00.000Z","1944-01-01T00:00:00.000Z","1945-01-01T00:00:00.000Z","1946-01-01T00:00:00.000Z","1947-01-01T00:00:00.000Z","1948-01-01T00:00:00.000Z","1949-01-01T00:00:00.000Z","1950-01-01T00:00:00.000Z","1951-01-01T00:00:00.000Z","1952-01-01T00:00:00.000Z","1953-01-01T00:00:00.000Z","1954-01-01T00:00:00.000Z","1955-01-01T00:00:00.000Z","1956-01-01T00:00:00.000Z","1957-01-01T00:00:00.000Z","1958-01-01T00:00:00.000Z","1959-01-01T00:00:00.000Z","1960-01-01T00:00:00.000Z","1961-01-01T00:00:00.000Z","1962-01-01T00:00:00.000Z","1963-01-01T00:00:00.000Z","1964-01-01T00:00:00.000Z","1965-01-01T00:00:00.000Z","1966-01-01T00:00:00.000Z","1967-01-01T00:00:00.000Z","1968-01-01T00:00:00.000Z","1969-01-01T00:00:00.000Z","1970-01-01T00:00:00.000Z","1971-01-01T00:00:00.000Z"],[49.9,52.3,49.4,51.1,49.4,47.9,49.8,50.9,49.3,51.9,50.8,49.6,49.3,50.6,48.4,50.7,50.9,50.6,51.5,52.8,51.8,51.1,49.8,50.2,50.4,51.6,51.8,50.9,48.8,51.7,51,50.6,51.7,51.5,52.1,51.3,51,54,51.4,52.7,53.1,54.6,52,52,50.9,52.6,50.2,52.6,51.6,51.9,50.5,50.9,51.7,51.4,51.7,50.8,51.9,51.8,51.9,53]]},"evals":["attrs.interactionModel"],"jsHooks":[]}</script>
+<div class="dygraphs html-widget html-fill-item" id="htmlwidget-26e2332ba516b7096ad3" style="width:100%;height:464px;"></div>
+<script type="application/json" data-for="htmlwidget-26e2332ba516b7096ad3">{"x":{"attrs":{"title":"New Haven Temperatures","labels":["year","V1"],"legend":"auto","retainDateWindow":false,"axes":{"x":{"pixelsPerLabel":60}},"showRangeSelector":true,"dateWindow":["1920-01-01T00:00:00.000Z","1960-01-01T00:00:00.000Z"],"rangeSelectorHeight":40,"rangeSelectorPlotFillColor":" #A7B1C4","rangeSelectorPlotStrokeColor":"#808FAB","interactionModel":"Dygraph.Interaction.defaultModel"},"scale":"yearly","annotations":[],"shadings":[],"events":[],"format":"date","data":[["1912-01-01T00:00:00.000Z","1913-01-01T00:00:00.000Z","1914-01-01T00:00:00.000Z","1915-01-01T00:00:00.000Z","1916-01-01T00:00:00.000Z","1917-01-01T00:00:00.000Z","1918-01-01T00:00:00.000Z","1919-01-01T00:00:00.000Z","1920-01-01T00:00:00.000Z","1921-01-01T00:00:00.000Z","1922-01-01T00:00:00.000Z","1923-01-01T00:00:00.000Z","1924-01-01T00:00:00.000Z","1925-01-01T00:00:00.000Z","1926-01-01T00:00:00.000Z","1927-01-01T00:00:00.000Z","1928-01-01T00:00:00.000Z","1929-01-01T00:00:00.000Z","1930-01-01T00:00:00.000Z","1931-01-01T00:00:00.000Z","1932-01-01T00:00:00.000Z","1933-01-01T00:00:00.000Z","1934-01-01T00:00:00.000Z","1935-01-01T00:00:00.000Z","1936-01-01T00:00:00.000Z","1937-01-01T00:00:00.000Z","1938-01-01T00:00:00.000Z","1939-01-01T00:00:00.000Z","1940-01-01T00:00:00.000Z","1941-01-01T00:00:00.000Z","1942-01-01T00:00:00.000Z","1943-01-01T00:00:00.000Z","1944-01-01T00:00:00.000Z","1945-01-01T00:00:00.000Z","1946-01-01T00:00:00.000Z","1947-01-01T00:00:00.000Z","1948-01-01T00:00:00.000Z","1949-01-01T00:00:00.000Z","1950-01-01T00:00:00.000Z","1951-01-01T00:00:00.000Z","1952-01-01T00:00:00.000Z","1953-01-01T00:00:00.000Z","1954-01-01T00:00:00.000Z","1955-01-01T00:00:00.000Z","1956-01-01T00:00:00.000Z","1957-01-01T00:00:00.000Z","1958-01-01T00:00:00.000Z","1959-01-01T00:00:00.000Z","1960-01-01T00:00:00.000Z","1961-01-01T00:00:00.000Z","1962-01-01T00:00:00.000Z","1963-01-01T00:00:00.000Z","1964-01-01T00:00:00.000Z","1965-01-01T00:00:00.000Z","1966-01-01T00:00:00.000Z","1967-01-01T00:00:00.000Z","1968-01-01T00:00:00.000Z","1969-01-01T00:00:00.000Z","1970-01-01T00:00:00.000Z","1971-01-01T00:00:00.000Z"],[49.9,52.3,49.4,51.1,49.4,47.9,49.8,50.9,49.3,51.9,50.8,49.6,49.3,50.6,48.4,50.7,50.9,50.6,51.5,52.8,51.8,51.1,49.8,50.2,50.4,51.6,51.8,50.9,48.8,51.7,51,50.6,51.7,51.5,52.1,51.3,51,54,51.4,52.7,53.1,54.6,52,52,50.9,52.6,50.2,52.6,51.6,51.9,50.5,50.9,51.7,51.4,51.7,50.8,51.9,51.8,51.9,53]]},"evals":["attrs.interactionModel"],"jsHooks":[]}</script>
 </div>
 </div>
 </section>
