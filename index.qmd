@@ -47,7 +47,7 @@ download.file(
   mode = "wb"
 )
 ```
-US presidential elections in 2020
+US presidential elections in 2020*
 
 https://
 dataverse.harvard.edu/dataset.xhtml?persistentId=doi%3A10.7910%2FDVN%2FVOQCHQ&
@@ -56,7 +56,7 @@ dataverse.harvard.edu/dataset.xhtml?persistentId=doi%3A10.7910%2FDVN%2FVOQCHQ&
 ```r
 data_US_elec <- readr::read_csv("data/countypres_2000-2024.csv")
 ```
-
+*I haven't accomplish setting a download link for this set of data yet.
 American urban-rural population (last update 2023)
 
  https://
