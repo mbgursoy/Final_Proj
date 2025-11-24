@@ -77,7 +77,10 @@ download.file(
 )
 ```
 The Code
-
+#You may want to include to check if packages are installed first, or remove install.packages.
+#(!(package_name %in% rownames(installed.packages()))) {
+  install.packages(package_name)
+}
 ```{r}
 install.packages("sf")
 install.packages("dplyr")
