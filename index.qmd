@@ -64,7 +64,7 @@ dataverse.harvard.edu/dataset.xhtml?persistentId=doi%3A10.7910%2FDVN%2FVOQCHQ&
 data_US_elec <- readr::read_csv("data/countypres_2000-2024.csv")
 ```
 *I haven't accomplish setting a download link for this set of data yet.
-American urban-rural population (last update 2023)
+American urban-rural population (last update 2023) 
 
  https://
 www.ers.usda.gov/data-products/rural-urban-continuum-codes
@@ -76,7 +76,7 @@ download.file(
   mode = "wb"
 )
 ```
-The Code
+The Code 
 
 ```{r}
 install.packages("sf")
@@ -116,7 +116,7 @@ library(tidyr)
 options(tigris_use_cache = TRUE)
 sf::sf_use_s2(FALSE)
 
-## rucc codes
+## rucc codes 
 rucc_raw <- read_csv("data/us_rucc_2023.csv") |>
   janitor::clean_names()
 
@@ -166,7 +166,7 @@ counties <- tigris::counties(cb = TRUE, year = 2023) |>
     as.numeric(statefp) <= 56    
   )
 
-# Join data
+# Join data 
 
 us_map <- counties |>
   left_join(rucc, by = "geoid") |>
