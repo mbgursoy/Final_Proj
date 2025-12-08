@@ -4,7 +4,16 @@
 .Ruserdata
 _site
 *cache
-*_files
+
 /.quarto/
 styles*
 widgets
+
+data/
+
+*_cache/
+
+*.zip
+*.gpkg
+*.csv
+*.nc

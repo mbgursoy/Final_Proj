@@ -1,14 +1,27 @@
 ---
-title: "My Final Project Template"
+title: "Population Distribution and Left-Right Voting"
 author: Mustafa Gursoy
-subtitle: Spatial Data Science Project
+subtitle: Comparison of USA and France
 date: today
 date-format: long
+
+format:
+  html:
+    code-fold: true        
+    code-summary: "Show code"
+    lightbox: true         
+  pdf:
+    documentclass: scrartcl   
+    toc: true                 
+    number-sections: true         
+    
+execute:
+  warning: FALSE           
+  message: FALSE           
 ---
 
 # Introduction
 
-\[\~ 200 words\]
 
 This study aims to investigate the effects of different historical developments of ideological spectrum (left/right) on the relationship between urban-rural population distribution and the general election voting. 
 
@@ -16,79 +29,14 @@ There are noted findings in the political science literature that rural areas te
 
 In this project, I compare the presidential elections of France-2022 and the USA-2020. I analyze how different the relationship between urban-rural population distribution and left-right voting behavior in France and in the USA. 
 
-I hypothesize that two reasons will effect differences in this relationship: first is the stronger tradition of left-wing politics in France; and the second is the wider spectrum of left-wing ideologies. The longer history of leftism can create a closer political affiliation between the rural population and the left-wing parties. The wider spectrum of political ideologies, on the other hand, can present various opportunities for political parties to establish rapport with the rural populations. This is because in a wider political spectrum, not only the number of parties are higher, but also the substantial issue positions adopted by parties can offer a higher variety in their combinations. In a biparty system, issue positions, such as A, B, C, D, are divided into two, while in a multiparty system the issue positions are not only divided into more sections, but also they are adopted by parties with overlaps such as Party-X can adopt A and B while Party-y can adopt B and D. Since France has a multi-party system, multiple parties can address the interests of the rural voters in different ways, preventing the concentration of vote. 
+I hypothesize that two reasons will effect differences in this relationship: first is the stronger tradition of left-wing politics in France; and the second is the wider spectrum of left-wing ideologies. The longer history of leftism can create a closer political affiliation between the rural population and the left-wing parties. The wider spectrum of political ideologies, on the other hand, can present various opportunities for political parties to establish rapport with the rural populations. This is because in a wider political spectrum, not only the number of parties are higher, but also the substantial issue positions adopted by parties can offer a higher variety in their combinations. In a biparty system, issue positions, such as A, B, C, D, are divided into two, while in a multiparty system the issue positions are not only divided into more sections, but also they are adopted by parties with overlaps such as Party-X can adopt A and B while Party-Y can adopt B and D. Since France has a multi-party system, multiple parties can address the interests of the rural voters in different ways, preventing the concentration of vote. 
 
-*sidenote: I was not able to clear the initialization lines of the code below, I will deal with it later. 
 
 # Materials and methods
-
-\[\~ 200 words\]
-
-Data 
-
-French presidential elections in 2022
-
-https://www.data.gouv.fr/datasets/election-presidentielle-des-10-et-24-avril-2022-resul-
-tats-definitifs-du-1er-tour/
-
-```{r}
-#download.file(
- # url = "https://www.data.gouv.fr/api/1/datasets/r/98eb9dab-f328-4dee-ac08-ac17211357a8",
-  #destfile = "data/france_election_2022_R1_communes.csv",
-#  mode = "wb"
-#)
-```
-French urban-rural population (last update 2020)
-
- https://www.insee.fr/fr/information/4802589
- 
-```{r}
-download.file(
-  url = "https://www.insee.fr/fr/statistiques/fichier/4802589/UU2020_au_01-01-2025.zip",
-  destfile = "data/france_UU2020_commune.zip",
-  mode = "wb"
-)
-```
-
-French - Geometric Data for Matching
-*the file was too large, I will upload it later
-
-
-US presidential elections in 2020*
-
-https://
-dataverse.harvard.edu/dataset.xhtml?persistentId=doi%3A10.7910%2FDVN%2FVOQCHQ&
-
-[Download the CSV](data/countypres_2000-2024.csv)
-```r
-data_US_elec <- readr::read_csv("data/countypres_2000-2024.csv")
-```
-*I haven't accomplish setting a download link for this set of data yet.
-American urban-rural population (last update 2023)
-
- https://
-www.ers.usda.gov/data-products/rural-urban-continuum-codes
-
-```{r}
-download.file(
-  url = "https://ers.usda.gov/sites/default/files/_laserfiche/DataFiles/53251/Ruralurbancontinuumcodes2023.csv?v=36152",
-  destfile = "data/us_rucc_2023.csv",
-  mode = "wb"
-)
-```
-The Code
-
-```{r}
-install.packages("sf")
-install.packages("dplyr")
-install.packages("readr")
-install.packages("ggplot2")
-install.packages("tigris")
-install.packages("classInt")
-install.packages("scales")
-install.packages("janitor")
-install.packages("stringr")
-install.packages("units")
+## R Packages
+<details>
+  <summary><strong>Click to expand: Packages </strong></summary>
+  
 library(sf)
 library(dplyr)
 library(readr)
@@ -99,27 +47,144 @@ library(scales)
 library(janitor)
 library(stringr)
 library(units)
-library(readr)
 library(tidyr)
 
+## DATA
+
+```{r}
+#| label: setup-data
+#| include: false
+#| message: false
+#| warning: false
+
+# Local data directory
+data_dir <- "data"
+if (!dir.exists(data_dir)) {
+  dir.create(data_dir, recursive = TRUE)
+}
+
+# Base URL of your public data repository on GitHub
+data_base <- "https://raw.githubusercontent.com/mbgursoy/final-proj-data/main"
+
+# Helper: download a file from the data repo if it is missing locally
+download_if_missing <- function(local_path, remote_name) {
+  if (!file.exists(local_path)) {
+    url <- file.path(data_base, remote_name)
+    message("Downloading ", remote_name, " from ", url)
+    download.file(url = url, destfile = local_path, mode = "wb")
+  }
+}
+
+# Paths used later in the code
+rucc_path    <- file.path(data_dir, "us_rucc_2023.csv")
+uu_zip       <- file.path(data_dir, "france_UU2020_commune.zip")
+fr_elex_path <- file.path(data_dir, "france_election_2022_R1_communes.csv")
+us_elex_path <- file.path(data_dir, "us_countypres_2000-2024.csv")
+
+# Download from your GitHub data repo if missing
+download_if_missing(rucc_path,    "us_rucc_2023.csv")
+download_if_missing(uu_zip,       "france_UU2020_commune.zip")
+download_if_missing(fr_elex_path, "france_election_2022_R1_communes.csv")
+download_if_missing(us_elex_path, "us_countypres_2000-2024.csv")
+
+# Local path for the large France geometry file
+gpkg_path <- file.path(data_dir, "france_geosp.gpkg")
+
+# Download from GitHub Release only if it's missing locally
+if (!file.exists(gpkg_path)) {
+  gpkg_url <- "https://github.com/mbgursoy/final-proj-data/releases/download/geometry/france_geosp.gpkg"
+  message("Downloading france_geosp.gpkg from ", gpkg_url)
+  download.file(url = gpkg_url, destfile = gpkg_path, mode = "wb")
+}
+
+```
+
+<details>
+  <summary><strong>Click to expand: Data Links</strong></summary>
+French 2022 Presidential Election Results (R1)
+Tabular vote counts for each candidate at the commune level.
+Converted into Left/Right blocs.
+
+https://www.data.gouv.fr/datasets/election-presidentielle-des-10-et-24-avril-2022-resultats-definitifs-du-1er-tour/
+
+French Population Distribution INSEE UU2020 (Unités Urbaines)
+Tabular classification of communes as Urban vs Rural.
+Joined by INSEE commune code.
+
+https://www.insee.fr/fr/information/4802589
+
+French Geometry Data IGN Admin Express (Commune Polygons – for merging)
+Official French administrative boundaries.
+Polygon spatial data at the commune level (higher resolution than US counties).
+Used for all France maps.
+This file is large and is not auto-downloaded; it must be obtained separately.
+
+2020 Presidential Election Results (MIT Election Lab)
+Tabular vote counts at the county level.
+Joined to polygons using GEOID identifiers.
+Allows derivation of Left vs Right vote shares.
+
+https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi%3A10.7910%2FDVN%2FVOQCHQ￼
+
+American urban-rural population (RUCC 2023)
+Rural–Urban Continuum Codes from USDA ERS.
+Tabular (non-spatial) data describing each county’s classification.
+Joined to county geometries using the county GEOID.
+
+https://www.ers.usda.gov/data-products/rural-urban-continuum-codes
+
+County Geometries (TIGER/Line 2023)
+Provided by the U.S. Census Bureau.
+Polygon spatial data, each polygon representing a full county boundary.
+Accessed directly via the {tigris} package.
+</details>
+
+```{r}
+
+#####.    DELETTTEEE
+
+
+
+
+```{r, eval = TRUE, include = FALSE}
+install.packages("sf")
+install.packages("dplyr")
+install.packages("readr")
+install.packages("ggplot2")
+install.packages("tigris")
+install.packages("classInt")
+install.packages("scales")
+install.packages("janitor")
+install.packages("stringr")
+install.packages("units")
+install.packages("tidyr")
+library(sf)
+library(dplyr)
+library(readr)
+library(ggplot2)
+library(tigris)
+library(classInt)
+library(scales)
+library(janitor)
+library(stringr)
+library(units)
+library(tidyr)
 
 ```
 
 
-# Results - (Example Plot for First Draft)
-
+# Results 
+The results point to future research as the voting distributions of the two countries can vary depending on the victor of the election in question. For better understanding, it may be necessary to supplement this research with a time-series analysis. It could also prove significant to incorporate victory margins of left and right parties in counties/communes. Below is the illustrated results on maps. 
 
 ```{r, message = FALSE}
-
-
-
 options(tigris_use_cache = TRUE)
 sf::sf_use_s2(FALSE)
 
-## rucc codes
-rucc_raw <- read_csv("data/us_rucc_2023.csv") |>
+# -----------------------------
+# 1) RUCC codes: build urban/rural classification
+# -----------------------------
+rucc_raw <- read_csv(rucc_path) |>
   janitor::clean_names()
-
 
 rucc <- rucc_raw |>
   mutate(attribute = tolower(attribute)) |>
@@ -145,29 +210,21 @@ if (!is.na(pop_name)) {
   pop <- tibble(geoid = character(), population = numeric())
 }
 
+# -----------------------------
+# 2) County geometries (mainland US)
+# -----------------------------
 counties <- tigris::counties(cb = TRUE, year = 2023) |>
   st_as_sf() |>
   janitor::clean_names() |>
   mutate(geoid = geoid) |>
   filter(
-    !statefp %in% c("02", "15"),  
-    as.numeric(statefp) <= 56 
+    !statefp %in% c("02", "15"),  # drop Alaska, Hawaii
+    as.numeric(statefp) <= 56
   )
 
-
-#  County geometries
-
-counties <- tigris::counties(cb = TRUE, year = 2023) |>
-  st_as_sf() |>
-  janitor::clean_names() |>
-  mutate(geoid = geoid) |>
-  filter(
-    !statefp %in% c("02", "15"), 
-    as.numeric(statefp) <= 56    
-  )
-
-# Join data
-
+# -----------------------------
+# 3) Join data and classify Urban vs Rural
+# -----------------------------
 us_map <- counties |>
   left_join(rucc, by = "geoid") |>
   left_join(pop,  by = "geoid") |>
@@ -175,23 +232,14 @@ us_map <- counties |>
     urban_rural = case_when(
       rucc_code %in% 1:3 ~ "Urban",
       rucc_code %in% 4:9 ~ "Rural",
-      TRUE ~ NA_character_
+      TRUE               ~ NA_character_
     )
   )
 
-message(sprintf("RUCC coverage: %.1f%%; Population coverage: %.1f%%",
-                100 * mean(!is.na(us_map$rucc_code)),
-                100 * mean(!is.na(us_map$population))))
-
-
-print(us_map |>
-        st_drop_geometry() |>
-        count(urban_rural))
-
-
-# Choropleth
-
-p <- ggplot(us_map) +
+# -----------------------------
+# Map US-1: Urban vs Rural (RUCC)
+# -----------------------------
+p_us_ur <- ggplot(us_map) +
   geom_sf(aes(fill = urban_rural), color = NA) +
   scale_fill_manual(
     values = c("Urban" = "#7b3294",   # purple
@@ -201,12 +249,684 @@ p <- ggplot(us_map) +
   ) +
   theme_minimal(base_size = 13) +
   labs(
-    title = "Urban vs Rural by County — RUCC 2023",
+    title    = "Urban vs Rural by County — RUCC 2023",
     subtitle = "Purple = Urban (RUCC 1–3), Orange = Rural (RUCC 4–9)",
-    fill = "Classification",
-    caption = "Data: USDA ERS (RUCC 2023), US Census TIGER/Line (2023)"
+    fill     = "Classification",
+    caption  = "Data: USDA ERS (RUCC 2023), US Census TIGER/Line (2023)"
   )
 
-print(p)
+#                p_us_ur
+
+# -----------------------------
+# 4) US 2020 Presidential Left–Right Maps and Urban/Rural Intersections
+# -----------------------------
+
+# 4.1) Read the county-level presidential election data
+us_elex <- readr::read_csv(
+  us_elex_path,
+  show_col_types = FALSE
+)
+
+nm_us <- names(us_elex)
+
+# Detect key columns robustly
+year_col  <- nm_us[grepl("^year$",  nm_us, ignore.case = TRUE)][1]
+fips_col  <- nm_us[grepl("fips",    nm_us, ignore.case = TRUE)][1]
+
+party_col <- if ("party_simplified" %in% nm_us) {
+  "party_simplified"
+} else {
+  nm_us[grepl("^party$", nm_us, ignore.case = TRUE)][1]
+}
+
+candvote_col  <- nm_us[grepl("candidatevotes", nm_us, ignore.case = TRUE)][1]
+totalvote_col <- nm_us[grepl("totalvotes",     nm_us, ignore.case = TRUE)][1]
+
+office_col <- nm_us[grepl("^office$", nm_us, ignore.case = TRUE)][1]
+if (identical(office_col, character(0))) office_col <- NA_character_
+
+if (is.na(year_col)  || is.na(fips_col) ||
+    is.na(party_col) || is.na(candvote_col) || is.na(totalvote_col)) {
+  stop(
+    "Could not auto-detect some key columns in US election CSV.\n",
+    "Columns are: ", paste(nm_us, collapse = ", ")
+  )
+}
+
+# 4.2) Restrict to 2020 results and build a GEOID
+us_elex_2020 <- us_elex |>
+  dplyr::filter(.data[[year_col]] == 2020) |>
+  dplyr::filter(!is.na(.data[[fips_col]])) |>
+  dplyr::mutate(
+    geoid = sprintf("%05s", as.integer(.data[[fips_col]]))
+  )
+
+# 4.3) Classify parties into Left / Right blocs
+left_parties  <- c("DEMOCRAT", "DEMOCRATIC", "DEMOCRATIC-FARMER-LABOR")
+right_parties <- c("REPUBLICAN")
+
+us_lr <- us_elex_2020 |>
+  dplyr::mutate(
+    party_simpl = toupper(.data[[party_col]]),
+    bloc_lr = dplyr::case_when(
+      party_simpl %in% left_parties  ~ "Left",
+      party_simpl %in% right_parties ~ "Right",
+      TRUE                           ~ NA_character_
+    )
+  ) |>
+  dplyr::group_by(geoid) |>
+  dplyr::summarise(
+    left_votes  = sum(.data[[candvote_col]][bloc_lr == "Left"],  na.rm = TRUE),
+    right_votes = sum(.data[[candvote_col]][bloc_lr == "Right"], na.rm = TRUE),
+    total_lr    = left_votes + right_votes,
+    left_share  = dplyr::if_else(total_lr > 0, left_votes / total_lr, NA_real_),
+    right_share = dplyr::if_else(total_lr > 0, right_votes / total_lr, NA_real_),
+    lr_margin   = left_share - right_share,
+    .groups     = "drop"
+  )
+
+# 4.4) Join Left/Right to the existing US mainland map
+us_map2 <- us_map |>
+  dplyr::left_join(us_lr, by = "geoid") |>
+  dplyr::mutate(
+    lr_winner = dplyr::case_when(
+      lr_margin > 0  ~ "Left",
+      lr_margin < 0  ~ "Right",
+      TRUE           ~ NA_character_
+    )
+  )
+
+# -----------------------------
+# Map US-2: Left vs Right winner, mainland only
+# -----------------------------
+p_us_lr <- ggplot2::ggplot(us_map2) +
+  ggplot2::geom_sf(
+    ggplot2::aes(fill = lr_winner),
+    color = NA
+  ) +
+  ggplot2::scale_fill_manual(
+    values   = c("Left" = "#08519c", "Right" = "#cb181d"),
+    na.value = "grey90",
+    drop     = FALSE
+  ) +
+  ggplot2::theme_minimal(base_size = 13) +
+  ggplot2::labs(
+    title    = "US — 2020 Presidential Left vs Right by County",
+    subtitle = "Blue = counties where Democratic bloc leads; Red = counties where Republican bloc leads",
+    fill     = "Leading bloc",
+    caption  = "Data: MIT Election Data & Science Lab (countypres),\n USDA ERS (RUCC 2023), US Census TIGER/Line (2023)"
+  )
+
+#                                 p_us_lr
+
+# -----------------------------
+# Map US-3: Urban counties & Left-leaning Urban counties (FILLS)
+# -----------------------------
+us_map2 <- us_map2 |>
+  dplyr::mutate(
+    is_left_urban = (urban_rural == "Urban" & lr_winner == "Left"),
+    cat_us3 = dplyr::case_when(
+      is_left_urban             ~ "Left & Urban",
+      urban_rural == "Urban"    ~ "Urban only",
+      TRUE                      ~ "Other"
+    )
+  )
+
+p_us_left_urban <- ggplot2::ggplot(us_map2) +
+  ggplot2::geom_sf(
+    ggplot2::aes(fill = cat_us3),
+    color = NA
+  ) +
+  ggplot2::scale_fill_manual(
+    values = c(
+      "Other"        = "grey90",   # background
+      "Urban only"   = "#9e9ac8",  # light purple
+      "Left & Urban" = "#542788"   # deep purple
+    ),
+    drop = FALSE
+  ) +
+  ggplot2::theme_minimal(base_size = 12) +
+  ggplot2::labs(
+    title    = "US — Urban Counties and Left-Leaning Urban Counties (2020)",
+    subtitle = paste(
+      "Light purple: all Urban counties (RUCC 1–3)",
+      "Dark purple: Urban counties where Democratic bloc leads in 2020",
+      sep = "\n"
+    ),
+    fill     = NULL,
+    caption  = "Data: MIT Election Data & Science Lab (countypres),\n USDA ERS (RUCC 2023), US Census TIGER/Line (2023)"
+  )
+
+#                                 p_us_left_urban
+
+# -----------------------------
+# Map US-4: Rural counties & Right-leaning Rural counties (FILLS)
+# -----------------------------
+us_map2 <- us_map2 |>
+  dplyr::mutate(
+    is_right_rural = (urban_rural == "Rural" & lr_winner == "Right"),
+    cat_us4 = dplyr::case_when(
+      is_right_rural            ~ "Right & Rural",
+      urban_rural == "Rural"    ~ "Rural only",
+      TRUE                      ~ "Other"
+    )
+  )
+
+p_us_right_rural <- ggplot2::ggplot(us_map2) +
+  ggplot2::geom_sf(
+    ggplot2::aes(fill = cat_us4),
+    color = NA
+  ) +
+  ggplot2::scale_fill_manual(
+    values = c(
+      "Other"         = "grey90",  # background
+      "Rural only"    = "#FADADD", # light pinkish
+      "Right & Rural" = "#8B0000"  # dark red
+    ),
+    drop = FALSE
+  ) +
+  ggplot2::theme_minimal(base_size = 12) +
+  ggplot2::labs(
+    title    = "US — Rural Counties and Right-Leaning Rural Counties (2020)",
+    subtitle = paste(
+      "Light shade: all Rural counties (RUCC 4–9)",
+      "Dark red: Rural counties where Republican bloc leads in 2020",
+      sep = "\n"
+    ),
+    fill     = NULL,
+    caption  = "Data: MIT Election Data & Science Lab (countypres),\n USDA ERS (RUCC 2023), US Census TIGER/Line (2023)"
+  )
+
+#                             p_us_right_rural
+```
+## Maps
+
+```{r, message = FALSE}
+# -----------------------------
+# 1) Commune geometries from france_geosp.gpkg
+# -----------------------------
+gpkg_path
+
+# We explicitly choose the polygon commune layer:
+fr_communes <- sf::st_read(gpkg_path, layer = "commune", quiet = TRUE) |>
+  janitor::clean_names()
+
+# Find an INSEE commune code column and standardize to 'code_insee'
+insee_candidates <- c(
+  "code_insee",
+  "code_insee_de_la_commune",  # present in some Admin Express builds
+  "insee_com",
+  "codgeo",
+  "insee_cod",
+  "insee_code",
+  "com"
+)
+
+have_insee <- intersect(names(fr_communes), insee_candidates)
+if (length(have_insee) == 0) {
+  stop("Could not find an INSEE commune code column in france_geosp.gpkg (commune layer). ",
+       "Available columns: ", paste(names(fr_communes), collapse = ", "))
+}
+
+fr_communes <- fr_communes |>
+  dplyr::mutate(
+    code_insee = sprintf("%05s", as.character(.data[[have_insee[1]]]))
+  )
+
+# ---- Filter to mainland France (approximate lon/lat box) ----
+centroids <- sf::st_centroid(fr_communes)
+
+fr_communes <- fr_communes |>
+  dplyr::mutate(
+    lon = sf::st_coordinates(centroids)[, 1],
+    lat = sf::st_coordinates(centroids)[, 2]
+  ) |>
+  dplyr::filter(
+    lon > -6, lon < 10,
+    lat > 41, lat < 52
+  ) |>
+  dplyr::select(-lon, -lat)
+
+# -----------------------------
+# 2) INSEE Unités urbaines 2020 (urban / rural)
+# -----------------------------
+uu_zip <- "data/france_UU2020_commune.zip"
+uu_dir <- "data/uu2020"
+if (!dir.exists(uu_dir)) dir.create(uu_dir)
+
+# Unzip if needed
+unzip(uu_zip, exdir = uu_dir)
+
+uu_file <- list.files(
+  uu_dir,
+  pattern = "UU2020.*[.](xlsx|csv|CSV|XLSX)$",
+  full.names = TRUE
+)[1]
+
+if (is.na(uu_file)) {
+  stop("Could not find a UU2020 .xlsx or .csv file inside ", uu_dir,
+       ". Please open the zip manually once and check the filenames.")
+}
+
+if (grepl("\\.xlsx$", uu_file, ignore.case = TRUE)) {
+  uu_raw <- readxl::read_xlsx(
+    uu_file,
+    sheet = "Composition_communale",
+    skip  = 5
+  )
+} else {
+  uu_raw <- readr::read_csv2(
+    uu_file,
+    locale    = readr::locale(encoding = "UTF-8"),
+    guess_max = 50000
+  )
+}
+
+uu <- uu_raw |>
+  janitor::clean_names()
+
+nm <- names(uu)
+
+uu_code_col <- nm[grepl("codgeo|code_commune|code_insee", nm, ignore.case = TRUE)]
+uu_urban_col <- nm[grepl("uu2020|unite_urbaine|code_uu", nm, ignore.case = TRUE)]
+
+if (length(uu_code_col) == 0 || length(uu_urban_col) == 0) {
+  stop(
+    "Could not find commune code (e.g. codgeo) or UU code (e.g. uu2020) in UU2020 file.\n",
+    "Columns are: ", paste(nm, collapse = ", ")
+  )
+}
+
+uu_communes <- uu |>
+  dplyr::mutate(
+    code_insee = sprintf("%05s", as.character(.data[[uu_code_col[1]]])),
+    urban_rural_fr = dplyr::case_when(
+      type_commune_uu == "Unité urbaine"      ~ "Urban",
+      type_commune_uu == "Hors unité urbaine" ~ "Rural",
+      TRUE                                    ~ NA_character_
+    )
+  ) |>
+  dplyr::select(code_insee, urban_rural_fr)
+
+# -----------------------------
+# 3) French 2022 R1 election results (commune-level, WIDE format)
+# -----------------------------
+elex_path_csv <- fr_elex_path
+
+if (!file.exists(elex_path_csv)) {
+  stop(
+    "Could not find the French election CSV at '", elex_path_csv, "'.\n",
+    "Make sure the file is there. Current working directory is: ", getwd()
+  )
+}
+
+header_line <- readLines(elex_path_csv, n = 1, encoding = "UTF-8")
+
+comma_n <- stringr::str_count(header_line, ",")
+semi_n  <- stringr::str_count(header_line, ";")
+
+delim_guess <- if (semi_n > comma_n) ";" else ","
+
+elex_raw <- readr::read_delim(
+  elex_path_csv,
+  delim = delim_guess,
+  locale = readr::locale(encoding = "UTF-8"),
+  guess_max = 200000,
+  show_col_types = FALSE
+)
+
+elex <- elex_raw |>
+  janitor::clean_names()
+
+nm_elex <- names(elex)
+
+code_col <- nm_elex[grepl("code_insee", nm_elex, ignore.case = TRUE)]
+
+if (length(code_col) == 0) {
+  stop(
+    "Columns are: ", paste(nm_elex, collapse = ", ")
+  )
+}
+
+# Left/Right candidate lists (binary bloc classification)
+left_tokens <- c("MÉLENCHON", "MELENCHON",
+                 "JADOT",
+                 "ROUSSEL",
+                 "HIDALGO",
+                 "POUTOU",
+                 "ARTHAUD")
+
+right_tokens <- c("MACRON",
+                  "LE PEN", "LEPEN",
+                  "ZEMMOUR",
+                  "PÉCRESSE", "PECRESSE",
+                  "DUPONT-AIGNAN", "DUPONT AIGNAN",
+                  "LASSALLE")
+
+# Identify candidate name and vote columns (nom_*, voix_*)
+nom_cols  <- grep("^nom",  nm_elex, value = TRUE)
+voix_cols <- grep("^voix", nm_elex, value = TRUE)
+
+if (length(nom_cols) == 0 || length(voix_cols) == 0) {
+  stop(
+    "Could not find any 'nom*' or 'voix*' columns in the election data.\n",
+    "Columns are: ", paste(nm_elex, collapse = ", ")
+  )
+}
+
+nom_idx  <- match(nom_cols,  nm_elex)
+voix_idx <- match(voix_cols, nm_elex)
+
+nom_cols  <- nom_cols[order(nom_idx)]
+voix_cols <- voix_cols[order(voix_idx)]
+
+if (length(nom_cols) != length(voix_cols)) {
+  stop(
+    "Different number of 'nom*' and 'voix*' columns. Cannot reliably pair candidates.\n",
+    "nom_cols: ", paste(nom_cols, collapse = ", "),
+    "\nvoix_cols: ", paste(voix_cols, collapse = ", ")
+  )
+}
+
+cand_meta <- data.frame(
+  nom_col  = nom_cols,
+  voix_col = voix_cols,
+  stringsAsFactors = FALSE
+)
+
+cand_meta$candidate <- vapply(
+  cand_meta$nom_col,
+  function(col) {
+    vals <- as.character(elex[[col]])
+    vals[which(!is.na(vals))[1]]
+  },
+  character(1)
+)
+
+cand_meta$bloc_lr <- dplyr::case_when(
+  cand_meta$candidate %in% left_tokens  ~ "Left",
+  cand_meta$candidate %in% right_tokens ~ "Right",
+  TRUE ~ NA_character_
+)
+
+dept_col <- nm_elex[grepl("code_du_departement", nm_elex, ignore.case = TRUE)][1]
+
+elex <- elex |>
+  dplyr::mutate(
+    dplyr::across(
+      dplyr::all_of(cand_meta$voix_col),
+      ~ suppressWarnings(as.numeric(.x))
+    )
+  ) |>
+  dplyr::mutate(
+    dept = stringr::str_pad(
+      as.character(.data[[dept_col]]),
+      width = 2,
+      side  = "left",
+      pad   = "0"
+    ),
+    com  = stringr::str_pad(
+      as.character(.data[[code_col[1]]]),
+      width = 3,
+      side  = "left",
+      pad   = "0"
+    ),
+    code_insee = paste0(dept, com)
+  )
+
+left_voix_cols  <- cand_meta$voix_col[cand_meta$bloc_lr == "Left"]
+right_voix_cols <- cand_meta$voix_col[cand_meta$bloc_lr == "Right"]
+
+if (length(left_voix_cols) == 0 || length(right_voix_cols) == 0) {
+  stop(
+    "No left and/or right candidates detected in cand_meta.\n",
+    "cand_meta:\n",
+    paste(utils::capture.output(print(cand_meta)), collapse = "\n")
+  )
+}
+
+elex_lr <- elex |>
+  dplyr::mutate(
+    left_votes = rowSums(
+      dplyr::across(dplyr::all_of(left_voix_cols)),
+      na.rm = TRUE
+    ),
+    right_votes = rowSums(
+      dplyr::across(dplyr::all_of(right_voix_cols)),
+      na.rm = TRUE
+    )
+  ) |>
+  dplyr::group_by(code_insee) |>
+  dplyr::summarise(
+    left_votes  = sum(left_votes,  na.rm = TRUE),
+    right_votes = sum(right_votes, na.rm = TRUE),
+    total_lr    = left_votes + right_votes,
+    left_share  = dplyr::if_else(total_lr > 0, left_votes / total_lr, NA_real_),
+    right_share = dplyr::if_else(total_lr > 0, right_votes / total_lr, NA_real_),
+    lr_margin   = left_share - right_share,
+    .groups     = "drop"
+  )
+
+# -----------------------------
+# 5) Join geometry + UU (urban/rural) + voting
+# -----------------------------
+fr_map <- fr_communes |>
+  dplyr::left_join(uu_communes, by = "code_insee") |>
+  dplyr::left_join(elex_lr,   by = "code_insee")
+
+# -----------------------------
+# 6) Map 1 — Urban vs Rural communes
+# -----------------------------
+p_fr_urban <- ggplot2::ggplot(fr_map) +
+  ggplot2::geom_sf(
+    ggplot2::aes(fill = urban_rural_fr),
+    color = NA
+  ) +
+  ggplot2::scale_fill_manual(
+    values   = c("Urban" = "#7b3294", "Rural" = "#e66101"),
+    na.value = "grey90",
+    drop     = FALSE
+  ) +
+  ggplot2::theme_minimal(base_size = 12) +
+  ggplot2::labs(
+    title    = "France — Communes classified as Urban vs Rural (INSEE UU2020)",
+    subtitle = "Purple = Urban (commune en unité urbaine), \n Orange = Rural (hors unité urbaine)",
+    fill     = "Urban–Rural",
+    caption  = "Data: IGN Admin Express (communes, polygons), INSEE UU2020"
+  )
+
+#                                   p_fr_urban
+
+# -----------------------------
+# 7) Map 2 — Left vs Right leading bloc by commune
+# -----------------------------
+fr_map <- fr_map |>
+  dplyr::mutate(
+    lr_winner = dplyr::case_when(
+      lr_margin > 0  ~ "Left",
+      lr_margin < 0  ~ "Right",
+      TRUE ~ NA_character_
+    )
+  )
+
+p_fr_lr <- ggplot2::ggplot(fr_map) +
+  ggplot2::geom_sf(
+    ggplot2::aes(fill = lr_winner),
+    color = NA
+  ) +
+  ggplot2::scale_fill_manual(
+    values   = c("Left" = "#08519c", "Right" = "#cb181d"),
+    na.value = "grey90",
+    drop     = FALSE
+  ) +
+  ggplot2::theme_minimal(base_size = 12) +
+  ggplot2::labs(
+    title    = "France — Left vs Right Leading Bloc by Commune\nPrésidentielle 2022, 1er tour",
+    subtitle = "Blue = Left-bloc lead, Red = Right-bloc lead",
+    fill     = "Leading bloc",
+    caption  = "Data: Ministère de l’Intérieur (2022 R1),\n IGN Admin Express (communes, polygons), INSEE UU2020"
+  )
+
+#                                   p_fr_lr
+
+# -----------------------------
+# 8) Map 3 — Urban communes & Left-leaning Urban communes
+# -----------------------------
+fr_map <- fr_map |>
+  dplyr::mutate(
+    lr_winner = dplyr::case_when(
+      lr_margin > 0  ~ "Left",
+      lr_margin < 0  ~ "Right",
+      TRUE           ~ NA_character_
+    ),
+    is_left_urban = (urban_rural_fr == "Urban" & lr_winner == "Left"),
+    cat3 = dplyr::case_when(
+      is_left_urban             ~ "Left & Urban",
+      urban_rural_fr == "Urban" ~ "Urban only",
+      TRUE                      ~ "Other"
+    )
+  )
+
+p_fr_left_urban <- ggplot2::ggplot(fr_map) +
+  ggplot2::geom_sf(
+    ggplot2::aes(fill = cat3),
+    color = NA
+  ) +
+  ggplot2::scale_fill_manual(
+    values = c(
+      "Other"        = "grey90",
+      "Urban only"   = "#9e9ac8",
+      "Left & Urban" = "#542788"
+    ),
+    drop = FALSE
+  ) +
+  ggplot2::theme_minimal(base_size = 12) +
+  ggplot2::labs(
+    title    = "France — Urban Communes and Left-Leaning Urban Communes",
+    subtitle = paste(
+      "Light purple: all Urban communes (INSEE UU2020)",
+      "Dark purple: communes that are BOTH Urban\n and Left-leaning in 2022 (1st round)",
+      sep = "\n"
+    ),
+    fill     = NULL,
+    caption  = "Data: Ministère de l’Intérieur (2022 R1), \n IGN Admin Express (communes, polygons), INSEE UU2020"
+  )
+
+#                             p_fr_left_urban
+
+# -----------------------------
+# 9) Map 4 — Rural communes and Right-leaning Rural communes
+# -----------------------------
+fr_map <- fr_map |>
+  dplyr::mutate(
+    lr_winner = dplyr::case_when(
+      lr_margin > 0  ~ "Left",
+      lr_margin < 0  ~ "Right",
+      TRUE           ~ NA_character_
+    ),
+    is_right_rural = (urban_rural_fr == "Rural" & lr_winner == "Right"),
+    cat4 = dplyr::case_when(
+      is_right_rural             ~ "Right & Rural",
+      urban_rural_fr == "Rural"  ~ "Rural only",
+      TRUE                       ~ "Other"
+    )
+  )
+
+p_fr_right_rural <- ggplot2::ggplot(fr_map) +
+  ggplot2::geom_sf(
+    ggplot2::aes(fill = cat4),
+    color = NA
+  ) +
+  ggplot2::scale_fill_manual(
+    values = c(
+      "Other"         = "grey90",
+      "Rural only"    = "#FADADD",
+      "Right & Rural" = "#8B0000"
+    ),
+    drop = FALSE
+  ) +
+  ggplot2::theme_minimal(base_size = 12) +
+  ggplot2::labs(
+    title    = "France — Rural Communes and Right-Leaning Rural Communes",
+    subtitle = paste(
+      "Light orange: all Rural communes (INSEE UU2020)",
+      "Dark orange: communes that are BOTH Rural and\n Right-leaning in 2022 (1st round)",
+      sep = "\n"
+    ),
+    fill     = NULL,
+    caption  = "Data: Ministère de l’Intérieur (2022 R1), \n IGN Admin Express (communes, polygons), INSEE UU2020"
+  )
+
+#                               p_fr_right_rural
+```
+
+::: {.card}
+Urban - Rural (USA vs France)
+```{r}
+
+#| echo: false
+#| layout-ncol: 2
+#| fig-cap: "Urban vs Rural classifications: RUCC (USA counties) and UU2020 (French communes)."
+#| fig-width: 6
+#| fig-height: 4
+#| lightbox: true
+
+p_us_ur
+p_fr_urban
+```
+:::
+
+
+::: {.card}
+Left - Right (USA 2020 vs France 2022)
+
+```{r}
+#| echo: false
+#| layout-ncol: 2
+#| fig-cap: "Left vs Right leading blocs: Democratic vs Republican (USA 2020) and Left-bloc vs Right-bloc (France 2022)."
+#| fig-width: 6
+#| fig-height: 4
+#| lightbox: true
+
+p_us_lr
+p_fr_lr
 
 ```
+:::
+
+
+
+::: {.card}
+Rural+Right (USA 2020 vs France 2022)
+
+```{r}
+#| echo: false
+#| layout-ncol: 2
+#| fig-cap: "Intersection of Rural areas and Right-leaning vote: RUCC rural + Republican lead (USA 2020) and Rural communes + Right-bloc lead (France 2022)."
+#| fig-width: 6
+#| fig-height: 4
+#| lightbox: true
+
+p_us_right_rural
+p_fr_right_rural
+```
+:::
+
+
+
+::: {.card}
+Urban+Left (USA 2020 vs France 2022)
+
+```{r}
+#| echo: false
+#| layout-ncol: 2
+#| fig-cap: "Intersection of Rural areas and Right-leaning vote: RUCC rural + Republican lead (USA 2020) and Rural communes + Right-bloc lead (France 2022)."
+#| fig-width: 6
+#| fig-height: 4
+#| lightbox: true
+
+p_us_left_urban
+p_fr_left_urban
+```
+:::
+
