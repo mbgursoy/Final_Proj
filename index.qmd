@@ -10,10 +10,6 @@ format:
     code-fold: true        
     code-summary: "Show code"
     lightbox: true         
-  pdf:
-    documentclass: scrartcl   
-    toc: true                 
-    number-sections: true         
     
 execute:
   warning: FALSE           
